@@ -1,0 +1,122 @@
+{% extends "auctions/layout.html" %}
+
+{%  block body %}
+<div class="row justify-content-md-center">
+<div class="col-lg-6">
+<div class="card mb-3" style="max-width: 800px;">
+  {% if listing.closed == True and bids.user.pk == user.pk %}
+        <div class="alert alert-success">You have won this auction.</div>
+  {% elif listing.closed == True %}
+        <div class="alert alert-warning">This auction is closed.</div>
+  {% endif %}
+    <div class="row g-0">
+      
+      <div class="col-md-5">
+        {% if listing.url_image == "" %}
+        
+            <img style="width: 200px;" src="https://www.eduprizeschools.net/wp-content/uploads/2016/06/No_Image_Available.jpg">
+        {% elif listing.url_image != "" %}
+            <img style="width: 200px;" src="{{ listing.url_image }}" />
+        {% endif %}
+      </div>
+      <div class="col-md-7">
+        <div class="card-body">
+            
+            <h2 class="card-title">{{ listing.title }}</h2>
+            <p class="card-text">{{ listing.description }}</p>
+            <p class="card-text"><small class="text-muted">Category: {{ listing.category }}</small></p>
+            <hr />
+            <p class="card-text">Starting Bid: {{ listing.starting_bid }}</p>
+            
+            {% if bids != None and bid_submit == False %}
+              <p>Current Bid: {{ bids.bid }} </p>
+            {% elif bids != None and bid_submit == True %}
+              <p>Current Bid: {{ bids.bid }} </p>
+            {% endif %}
+           
+            <!-- <p>{{ current_bid }}</p> -->
+            
+            {% if user.is_authenticated %}
+            <p style="color: red;">{{ error_message }}</p>
+            {% if listing.closed == False %}
+            <form action="{% url 'bid' listing.id %}" method="POST">
+              {% csrf_token %}
+             
+              {{ bid_form }}
+              <input type="submit" name="bid_submit" class="btn btn-primary form-control" value="Submit Bid" />
+            </form>
+            {% endif %}
+              
+              {% if listing in user.watchlist.all %}
+                <!-- <h1>It's in the watchlist</h1>
+                <h2>{{ listing }}</h2>
+                <h3>{{ user.watchlist.all }}</h3> -->
+                <form action="{% url 'listing' listing.id %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" name="remove_watchlist" class="mt-3 form-control btn btn-danger" value="Remove from watchlist" />
+                </form>
+            {% else %}
+              <form action="{% url 'listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" name="add_watchlist" class="mt-3 form-control btn btn-secondary" value="Add to watchlist" />
+              </form>
+            {% endif %}
+            {% endif %}
+
+       
+            {% if listing.closed == False %}
+              {% if listing.created_by.pk == user.pk %}
+                
+              <form action="{% url 'listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" name="close_auction" class="mt-3 form-control btn btn-warning" value="Close Auction" />
+              </form>
+              {% endif %}
+            {% endif %}
+            
+            
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<div class="col-lg-6">
+ 
+  <div>
+    
+    <h2>Comments</h2>
+    {% for comment in comments %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ comment.comment_title }}</h5>
+            <p class="card-text">{{ comment.comment }}comment <span style="font-weight: bold;">-{{ comment.commenter.username }}</span></p>
+          
+          
+        </div>
+    </div>
+    {% endfor %}
+    {% if user.is_authenticated %}
+    {% if listing.closed == False %}
+    <div class="form mt-4">
+      <h4>Add Comment</h4>
+      <form action="{% url 'listing' listing.id %}" method="POST">
+        {% csrf_token %}
+        {{ comment_form }}
+        <input type="submit" name="add_comment" class="btn btn-primary form-control" />
+      </form>
+     
+    </div>
+    {% endif %}
+    
+    {% endif %}
+    
+   
+    
+</div>
+</div>
+</div>
+
+
+    
+{% endblock %}

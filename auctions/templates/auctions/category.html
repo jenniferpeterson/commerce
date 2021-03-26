@@ -1,0 +1,50 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+<div class="container">
+    
+    <div class="row justify-content-md-center">
+       
+        <div class="col-lg-9">
+            <h2>{{ cat_name }}</h2>
+            {% for listing in listings %}
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-5">
+                        {% if listing.url_image == "" %}
+                        
+                        <img style="width: 300px;" src="https://www.eduprizeschools.net/wp-content/uploads/2016/06/No_Image_Available.jpg">
+                    {% elif listing.url_image != "" %}
+                        <img style="width: 300px;" src="{{ listing.url_image }}" />
+                    {% endif %}
+                    
+                    <h5 class="card-title m-5">
+    
+                       <a href="{% url 'listing' listing.id %}">{{ listing.title }}</a> 
+                    </h5>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                    
+                            <p class="card-text">{{ listing.description}} </p>
+                            <hr />
+                            <p class="card-text">Starting bid: {{ listing.starting_bid}}</p>
+                            
+                            {% for element in array %}
+                                {% if element.listing.pk == listing.pk %}
+                                    <p style="font-weight: bold; color: red" class="card-text">Current bid: {{ element.bid }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

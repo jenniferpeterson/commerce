@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-6">
+            <ul class="list-group">
+                {% for category in categories %}
+                    <li class="list-group-item"><a href="{% url 'category' category_id=category.pk %}">{{ category }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+   
+{% endblock %}
