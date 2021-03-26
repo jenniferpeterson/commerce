@@ -1,3 +1,13 @@
 body {
-  padding: 10px;
+  background-color: #e8eae6;
+  font-family: "Montserrat", sans-serif;
+}
+
+.title {
+  background-color: #698474;
+}
+
+.title h1 {
+  color: white;
+  font-family: "Just Another Hand", cursive;
 }
